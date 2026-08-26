@@ -8,9 +8,34 @@ in vec3 vertexColor; // "in" means this variable is coming from the vertex shade
 
 out vec4 FragColor; // "out" means this variable is going to the fragment shader
 
+
+//RGBA
 void main()
 {
-    FragColor = vec4(vertexColor, 1.0);
-    // FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+    //Yellow
+    //FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+
+    //Dark version
+    //FragColor = vec4(vertexColor * 0.2, 1.0);
+
+    //Inverted
+    //FragColor = vec4(1.0 - vertexColor, 1.0);
+
+    //Only red channel kept
+    //FragColor = vec4(vertexColor.r, 0.0, 0.0, 1.0);
+
+    //red
+    //FragColor = vec4(1.0, 0, 0, 1.0);
+
+    //keeping red and green channel
+    FragColor = vec4(vertexColor.r, vertexColor.g, 0, 1);
+
+
+
+
+
+    //OLD
+    //FragColor = vec4(vertexColor, 1.0);
+    //FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 
 }
