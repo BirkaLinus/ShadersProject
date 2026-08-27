@@ -28,14 +28,28 @@ void main()
     //FragColor = vec4(1.0, 0, 0, 1.0);
 
     //keeping red and green channel
-    FragColor = vec4(vertexColor.r, vertexColor.g, 0, 1);
+    //FragColor = vec4(vertexColor.r, vertexColor.g, 0, 1);
 
+    /*
+    if (vertexColor.r > vertexColor.g && vertexColor.r > vertexColor.b)
+    {
+        FragColor = vec4(1.0, 0.0, 0.0, 1.0); //Red Third
+    }
+    else if (vertexColor.g > vertexColor.r && vertexColor.g > vertexColor.b)
+    {
+        FragColor = vec4(1.0, 1.0, 0.0, 1.0); //YELLOW(remove red vector to get green instead) Third    
+    }
+    else if (vertexColor.b > vertexColor.r && vertexColor.b > vertexColor.g)
+    {
+        FragColor = vec4(0.0, 0.0, 1.0, 1.0); //Blue third
+    }
+    */
 
-
+    //TEST
 
 
     //OLD
-    //FragColor = vec4(vertexColor, 1.0);
+    FragColor = vec4(vertexColor, 1.0);
     //FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 
 }

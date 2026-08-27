@@ -1,6 +1,10 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -33,107 +37,107 @@
 
 namespace
 {
-constexpr int WindowWidth = 900;
-constexpr int WindowHeight = 600;
+    constexpr int WindowWidth = 900;
+    constexpr int WindowHeight = 600;
 
-void glfwErrorCallback(int error, const char* description)
-{
-    std::cerr << "GLFW error (" << error << "): " << description << '\n';
-}
-
-std::string readTextFile(const std::string& path)
-{
-    std::ifstream file(path);
-    if (!file)
+    void glfwErrorCallback(int error, const char* description)
     {
-        throw std::runtime_error("Could not open file: " + path);
+        std::cerr << "GLFW error (" << error << "): " << description << '\n';
     }
 
-    std::ostringstream contents;
-    contents << file.rdbuf();
-    return contents.str();
-}
-
-GLuint compileShader(GLenum type, const std::string& source, const std::string& label)
-{
-    const GLuint shader = glCreateShader(type);
-    const char* sourcePtr = source.c_str();
-
-    glShaderSource(shader, 1, &sourcePtr, nullptr);
-    glCompileShader(shader);
-
-    GLint success = GL_FALSE;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-
-    if (success == GL_FALSE)
+    std::string readTextFile(const std::string& path)
     {
-        GLint logLength = 0;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
+        std::ifstream file(path);
+        if (!file)
+        {
+            throw std::runtime_error("Could not open file: " + path);
+        }
 
-        std::string log(static_cast<std::size_t>(logLength), '\0');
-        glGetShaderInfoLog(shader, logLength, nullptr, log.data());
-
-        glDeleteShader(shader);
-        throw std::runtime_error("Shader compilation failed (" + label + "):\n" + log);
+        std::ostringstream contents;
+        contents << file.rdbuf();
+        return contents.str();
     }
 
-    return shader;
-}
-
-GLuint createShaderProgram(const std::string& vertexPath, const std::string& fragmentPath)
-{
-    const std::string vertexSource = readTextFile(vertexPath);
-    const std::string fragmentSource = readTextFile(fragmentPath);
-
-    const GLuint vertexShader =
-        compileShader(GL_VERTEX_SHADER, vertexSource, vertexPath);
-    const GLuint fragmentShader =
-        compileShader(GL_FRAGMENT_SHADER, fragmentSource, fragmentPath);
-
-    const GLuint program = glCreateProgram();
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    GLint success = GL_FALSE;
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-
-    if (success == GL_FALSE)
+    GLuint compileShader(GLenum type, const std::string& source, const std::string& label)
     {
-        GLint logLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
+        const GLuint shader = glCreateShader(type);
+        const char* sourcePtr = source.c_str();
 
-        std::string log(static_cast<std::size_t>(logLength), '\0');
-        glGetProgramInfoLog(program, logLength, nullptr, log.data());
+        glShaderSource(shader, 1, &sourcePtr, nullptr);
+        glCompileShader(shader);
 
-        glDeleteProgram(program);
-        throw std::runtime_error("Shader program link failed:\n" + log);
+        GLint success = GL_FALSE;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+        if (success == GL_FALSE)
+        {
+            GLint logLength = 0;
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
+
+            std::string log(static_cast<std::size_t>(logLength), '\0');
+            glGetShaderInfoLog(shader, logLength, nullptr, log.data());
+
+            glDeleteShader(shader);
+            throw std::runtime_error("Shader compilation failed (" + label + "):\n" + log);
+        }
+
+        return shader;
     }
 
-    return program;
-}
-
-void framebufferSizeCallback(GLFWwindow*, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    GLuint createShaderProgram(const std::string& vertexPath, const std::string& fragmentPath)
     {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+        const std::string vertexSource = readTextFile(vertexPath);
+        const std::string fragmentSource = readTextFile(fragmentPath);
+
+        const GLuint vertexShader =
+            compileShader(GL_VERTEX_SHADER, vertexSource, vertexPath);
+        const GLuint fragmentShader =
+            compileShader(GL_FRAGMENT_SHADER, fragmentSource, fragmentPath);
+
+        const GLuint program = glCreateProgram();
+        glAttachShader(program, vertexShader);
+        glAttachShader(program, fragmentShader);
+        glLinkProgram(program);
+
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
+        GLint success = GL_FALSE;
+        glGetProgramiv(program, GL_LINK_STATUS, &success);
+
+        if (success == GL_FALSE)
+        {
+            GLint logLength = 0;
+            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
+
+            std::string log(static_cast<std::size_t>(logLength), '\0');
+            glGetProgramInfoLog(program, logLength, nullptr, log.data());
+
+            glDeleteProgram(program);
+            throw std::runtime_error("Shader program link failed:\n" + log);
+        }
+
+        return program;
     }
-}
+
+    void framebufferSizeCallback(GLFWwindow*, int width, int height)
+    {
+        glViewport(0, 0, width, height);
+    }
+
+    void processInput(GLFWwindow* window)
+    {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+    }
 } // namespace
 
 int main()
 {
-	glfwSetErrorCallback(glfwErrorCallback);
-	// Need to initialize GLFW before calling any GLFW functions
+    glfwSetErrorCallback(glfwErrorCallback);
+    // Need to initialize GLFW before calling any GLFW functions
     if (glfwInit() != GLFW_TRUE)
     {
         std::cerr << "Failed to initialize GLFW.\n";
@@ -221,14 +225,77 @@ int main()
         return 1;
     }
 
+    // Uniform locations identify the three matrix inputs in the vertex shader.
+    // We ask for them once after linking, then use the locations when sending
+    // matrix values from the CPU to the GPU before drawing.
+    const GLint modelLocation = glGetUniformLocation(shaderProgram, "model");
+    const GLint viewLocation = glGetUniformLocation(shaderProgram, "view");
+    const GLint projectionLocation = glGetUniformLocation(shaderProgram, "projection");
+
+    if (modelLocation == -1 ||
+        viewLocation == -1 ||
+        projectionLocation == -1)
+    {
+        std::cerr
+            << "Note: one or more matrix uniforms are inactive. "
+            << "This is expected if the current shader experiment does not use them.\n";
+    }
+
+    // glm::mat4(1.0f) creates an identity matrix: it leaves a vertex unchanged.
+    // This is a conservative starting model transform. What translation,
+    // rotation, or scale would you apply here to move the triangle in its world?
+    const glm::mat4 model(1.0f);
+
+    // The view matrix converts world-space positions into view space. Moving the
+    // world by -2 on Z places the triangle in front of the conventional OpenGL
+    // viewer without introducing a camera class or camera controls.
+    const glm::mat4 view =
+        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+
+    // These values define the perspective viewing volume. Keeping them named and
+    // visible makes it easy to ask: what changes when the field of view narrows,
+    // or when the near and far clipping planes move?
+    const float fieldOfView = glm::radians(45.0f);
+    const float nearPlane = 0.1f;
+    const float farPlane = 100.0f;
+
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
     {
         processInput(window);
+
+        // Framebuffer dimensions can differ from window dimensions on high-DPI
+        // displays. Reading the current framebuffer size keeps projected shapes
+        // in the correct proportions after a resize. A minimized window may have
+        // no drawable area, so wait for events instead of dividing by zero.
+        int framebufferWidth = 0;
+        int framebufferHeight = 0;
+        glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
+
+        if (framebufferWidth == 0 || framebufferHeight == 0)
+        {
+            glfwPollEvents();
+            continue;
+        }
+
+        const float aspectRatio =
+            static_cast<float>(framebufferWidth) /
+            static_cast<float>(framebufferHeight);
+        const glm::mat4 projection =
+            glm::perspective(fieldOfView, aspectRatio, nearPlane, farPlane);
 
         glClearColor(0.08f, 0.09f, 0.12f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        // glm::value_ptr exposes each GLM matrix as contiguous float data.
+        // GL_FALSE means OpenGL should use the conventional GLM/OpenGL matrix
+        // layout directly, without transposing it during the upload.
+        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(
+            projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
