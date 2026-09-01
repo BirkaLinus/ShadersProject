@@ -178,11 +178,22 @@ int main()
     std::cout << "OpenGL: " << glGetString(GL_VERSION) << '\n';
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << '\n';
 
-    // position.xyz, color.rgb
+    // position.xyz, color.rgb, UV
     constexpr float vertices[] = {
-         0.0f,  0.65f, 0.0f,   1.0f, 0.25f, 0.20f,
-        -0.65f, -0.55f, 0.0f,   0.20f, 0.90f, 0.35f,
-         0.65f, -0.55f, 0.0f,   0.20f, 0.45f, 1.00f
+        //Old
+        // 0.0f,  0.65f, 0.0f,   1.0f, 0.25f, 0.20f,
+        //-0.65f, -0.55f, 0.0f,   0.20f, 0.90f, 0.35f,
+        // 0.65f, -0.55f, 0.0f,   0.20f, 0.45f, 1.00f
+
+        //First Triangle
+        -0.5f,  1.0f, 0.0f,   1.0f, 0.5f, 0.0f,   0.0f, 1.0f,
+		0.5f,  -1.0f, 0.0f,   1.0f, 0.5f, 0.0f,   1.0f, 0.0f,
+        0.5f,   1.0f, 0.0f,   1.0f, 0.5f, 0.0f,   1.0f, 1.0f,
+
+		//Second Triangle
+	    -0.5f,  1.0f, 0.0f,   1.0f, 0.5f, 0.0f,   0.0f, 1.0f,
+		 0.5f, -1.0f, 0.0f,   1.0f, 0.5f, 0.0f,   1.0f, 0.0f,
+		-0.5f, -1.0f, 0.0f,   1.0f, 0.5f, 0.0f,   0.0f, 0.0f,
     };
 
     GLuint vao = 0;
@@ -196,7 +207,8 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    constexpr GLsizei stride = 6 * sizeof(float);
+	//Old was 6 but added UV so now 8
+    constexpr GLsizei stride = 8 * sizeof(float);
 
     glVertexAttribPointer(
         0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
