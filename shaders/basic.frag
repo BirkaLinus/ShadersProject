@@ -5,6 +5,7 @@
 // It takes the output from the vertex shader and uses it to determine the final color of each pixel.
 
 in vec3 vertexColor; // "in" means this variable is coming from the vertex shader
+in vec2 vertexUV;   // "in" means this variable is coming from the vertex shader
 
 out vec4 FragColor; // "out" means this variable is going to the fragment shader
 
@@ -47,9 +48,11 @@ void main()
 
     //TEST
 
+    FragColor = vec4(vertexUV, 0.0, 1.0); //Use UV coordinates to color the fragment
+
 
     //OLD
-    FragColor = vec4(vertexColor, 1.0);
+    //FragColor = vec4(vertexColor, 1.0);
     //FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 
 }

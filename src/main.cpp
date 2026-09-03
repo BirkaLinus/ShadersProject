@@ -211,12 +211,34 @@ int main()
     constexpr GLsizei stride = 8 * sizeof(float);
 
     glVertexAttribPointer(
-        0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
+		0,                                          // location 0
+		3,                                          // position has 3 numbers: x, y, z
+        GL_FLOAT, 
+        GL_FALSE, 
+        stride, 
+		reinterpret_cast<void*>(0)                  // position starts at the beginning of the vertex data
+    );
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(
-        1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
+		1,                                          // location 1
+		3,                                          // color has 3 numbers: r, g, b
+        GL_FLOAT, 
+        GL_FALSE, 
+        stride, 
+		reinterpret_cast<void*>(3 * sizeof(float))  // skip position(3) to reach color
+    );
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(
+        2,                                          // location 2
+        2,                                          // UV has 2 numbers: u, v
+        GL_FLOAT,                                   
+        GL_FALSE,                                   
+        stride,                                     
+        reinterpret_cast<void*>(6 * sizeof(float))  // skip position(3) + color(3) to reach UV
+    );
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 
@@ -309,7 +331,7 @@ int main()
             projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
