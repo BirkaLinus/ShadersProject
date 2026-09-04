@@ -6,8 +6,14 @@
 
 in vec3 vertexColor; // "in" means this variable is coming from the vertex shader
 in vec2 vertexUV;   // "in" means this variable is coming from the vertex shader
-
 out vec4 FragColor; // "out" means this variable is going to the fragment shader
+
+uniform float time;
+
+float hash(vec2 p)
+{
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
 
 
 //RGBA
@@ -48,7 +54,11 @@ void main()
 
     //TEST
 
-    FragColor = vec4(vertexUV, 0.0, 1.0); //Use UV coordinates to color the fragment
+    float noise = hash(vertexUV + time);
+    FragColor = vec4(noise, noise, noise, 1.0);
+
+    //basic
+    //FragColor = vec4(vertexUV, 0.0, 1.0); //Use UV coordinates to color the fragment (RGB, UV) 
 
 
     //OLD

@@ -265,6 +265,7 @@ int main()
     const GLint modelLocation = glGetUniformLocation(shaderProgram, "model");
     const GLint viewLocation = glGetUniformLocation(shaderProgram, "view");
     const GLint projectionLocation = glGetUniformLocation(shaderProgram, "projection");
+	const GLint timeLocation = glGetUniformLocation(shaderProgram, "time");
 
     if (modelLocation == -1 ||
         viewLocation == -1 ||
@@ -321,6 +322,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        const float currentTime = static_cast<float>(glfwGetTime());
+        glUniform1f(timeLocation, currentTime);
 
         // glm::value_ptr exposes each GLM matrix as contiguous float data.
         // GL_FALSE means OpenGL should use the conventional GLM/OpenGL matrix
