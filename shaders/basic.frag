@@ -9,6 +9,7 @@ in vec2 vertexUV;   // "in" means this variable is coming from the vertex shader
 out vec4 FragColor; // "out" means this variable is going to the fragment shader
 
 uniform float time;
+float fireSpeed = 0.5f;
 
 float hash(vec2 p)
 {
@@ -26,9 +27,15 @@ float smoothNoise(vec2 uv)
     float topLeft       = hash(cell + vec2 (0.0, 1.0));
     float topRight      = hash(cell + vec2 (1.0, 1.0));
 
+    float bottom = mix(bottomLeft, bottomRight, fractional.x);
+    float top = mix(topLeft, topRight, fractional.x);
+    float result = mix(bottom, top, fractional.y);
+
+    return result;
+
     //return cell.x / 4.0;  // varies left-to-right (vertical stripes)
     //return cell.y / 4.0;  // varies bottom-to-top (horizontal stripes)
-    return hash(cell);    // varies with BOTH x and y (full grid)
+    //return hash(cell);    // varies with BOTH x and y (full grid)
 }
 
 
@@ -74,7 +81,12 @@ void main()
     //FragColor = vec4(noise, noise, noise, 1.0);
 
     //test2
-    float noise = smoothNoise(vertexUV);
+    //float noise = smoothNoise(vertexUV);
+    //FragColor = vec4(noise, noise, noise, 1.0);
+
+    //test3
+    vec2 scrollingUV = vec2(vertexUV.x, vertexUV.y - time * fireSpeed);
+    float noise = smoothNoise(scrollingUV);
     FragColor = vec4(noise, noise, noise, 1.0);
 
     //basic
