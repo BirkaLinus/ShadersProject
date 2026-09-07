@@ -290,7 +290,7 @@ int main()
     // These values define the perspective viewing volume. Keeping them named and
     // visible makes it easy to ask: what changes when the field of view narrows,
     // or when the near and far clipping planes move?
-    const float fieldOfView = glm::radians(45.0f);
+    const float fieldOfView = glm::radians(60.0f);
     const float nearPlane = 0.1f;
     const float farPlane = 100.0f;
 

@@ -12,7 +12,23 @@ uniform float time;
 
 float hash(vec2 p)
 {
-    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); //Fake random
+}
+
+float smoothNoise(vec2 uv)
+{
+    vec2 scaledUV = uv * 4.0;
+    vec2 cell = floor(scaledUV);
+    vec2 fractional = fract(scaledUV);
+
+    float bottomLeft    = hash(cell + vec2 (0.0, 0.0));
+    float bottomRight   = hash(cell + vec2 (1.0, 0.0));
+    float topLeft       = hash(cell + vec2 (0.0, 1.0));
+    float topRight      = hash(cell + vec2 (1.0, 1.0));
+
+    //return cell.x / 4.0;  // varies left-to-right (vertical stripes)
+    //return cell.y / 4.0;  // varies bottom-to-top (horizontal stripes)
+    return hash(cell);    // varies with BOTH x and y (full grid)
 }
 
 
@@ -54,7 +70,11 @@ void main()
 
     //TEST
 
-    float noise = hash(vertexUV + time);
+    //float noise = hash(vertexUV + time);
+    //FragColor = vec4(noise, noise, noise, 1.0);
+
+    //test2
+    float noise = smoothNoise(vertexUV);
     FragColor = vec4(noise, noise, noise, 1.0);
 
     //basic
