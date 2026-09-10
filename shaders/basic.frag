@@ -15,8 +15,8 @@ float bottomThickness = 0.82f;
 //Colors
     vec3 black = vec3(0.0, 0.0, 0.0);
     vec3 red = vec3(1.0, 0.0, 0.0);
-    vec3 yellow = vec3(1.0, 1.0, 0.0);
-    vec3 white = vec3(1.0, 1.0, 0.8);
+    vec3 yellow = vec3(1.0, 1.0, 0.0);  
+    vec3 white = vec3(1.0, 1.0, 1.0);
 
 float hash(vec2 p)
 {
@@ -124,18 +124,22 @@ void main()
     //float fire = noise * shapeMask;
     float fire = noiseVariation * shapeMask;
 
+
+    float boundary1 = 0.3; //lower this for less red
+    float boundary2 = 0.8; //lower this for less white (more yellow)
+
     vec3 fireColor;
-    if(fire <0.3)
+    if(fire < boundary1)
     {
-        fireColor = mix(black, red, fire / 0.3);
+        fireColor = mix(black, red, fire / boundary1);
     }
-    else if (fire < 0.9)
+    else if (fire < boundary2)
     {
-        fireColor = mix(red, yellow, (fire - 0.3) / 0.6);
+        fireColor = mix(red, yellow, (fire - boundary1) / (boundary2 - boundary1));
     }
     else
     {
-    fireColor = mix(yellow, white, (fire - 0.9) / 0.1);
+    fireColor = mix(yellow, white, (fire - boundary2) / (1.0 - boundary2));
     }
 
 
