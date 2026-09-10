@@ -18,7 +18,7 @@ float hash(vec2 p)
 
 float smoothNoise(vec2 uv)
 {
-    vec2 scaledUV = uv * 4.0;
+    vec2 scaledUV = uv * 10.0;  //Change around to what looks better/best =)
     vec2 cell = floor(scaledUV);
     vec2 fractional = fract(scaledUV);
 
@@ -76,18 +76,50 @@ void main()
     */
 
     //TEST
-
     //float noise = hash(vertexUV + time);
+
     //FragColor = vec4(noise, noise, noise, 1.0);
 
     //test2
     //float noise = smoothNoise(vertexUV);
+
     //FragColor = vec4(noise, noise, noise, 1.0);
 
     //test3
+    //vec2 scrollingUV = vec2(vertexUV.x, vertexUV.y - time * fireSpeed);
+    //float noise = smoothNoise(scrollingUV);
+    
+    //FragColor = vec4(noise, noise, noise, 1.0);
+
+    //test4
+//    vec2 scrollingUV = vec2(vertexUV.x, vertexUV.y - time * fireSpeed);
+//    float noise = smoothNoise(scrollingUV);
+//    float shapeMask = 1.0 - vertexUV.y;
+//    float fire = noise * shapeMask;
+//    
+//    FragColor = vec4(fire, fire, fire, 1.0);
+
+    //test5
     vec2 scrollingUV = vec2(vertexUV.x, vertexUV.y - time * fireSpeed);
     float noise = smoothNoise(scrollingUV);
-    FragColor = vec4(noise, noise, noise, 1.0);
+    float shapeMask = 1.0 - vertexUV.y;
+    float fire = noise * shapeMask;
+
+    vec3 black = vec3(0.0, 0.0, 0.0);
+    vec3 red = vec3(1.0, 0.0, 0.0);
+    vec3 yellow = vec3(1.0, 1.0, 0.0);
+
+    vec3 fireColor;
+    if(fire <0.5)
+    {
+        fireColor = mix(black, red, fire * 2.0);
+    }
+    else
+    {
+        fireColor = mix(red, yellow, (fire - 0.5) * 2.0);
+    }
+
+    FragColor = vec4(fireColor, fire);
 
     //basic
     //FragColor = vec4(vertexUV, 0.0, 1.0); //Use UV coordinates to color the fragment (RGB, UV) 

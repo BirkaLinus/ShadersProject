@@ -177,6 +177,8 @@ int main()
 
     std::cout << "OpenGL: " << glGetString(GL_VERSION) << '\n';
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << '\n';
+    glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // position.xyz, color.rgb, UV
     constexpr float vertices[] = {
@@ -317,6 +319,10 @@ int main()
             static_cast<float>(framebufferHeight);
         const glm::mat4 projection =
             glm::perspective(fieldOfView, aspectRatio, nearPlane, farPlane);
+
+		//JUST FOR DEBUGGING PURPOSES, REMOVE LATER (BLUE)
+        //glClearColor(0.0f, 0.3f, 0.6f, 1.0f); 
+		//JUST FOR DEBUGGING PURPOSES, REMOVE LATER (BLUE)
 
         glClearColor(0.08f, 0.09f, 0.12f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
