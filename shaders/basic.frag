@@ -115,36 +115,43 @@ void main()
     //test5
     vec2 scrollingUV = vec2(vertexUV.x, vertexUV.y - time * fireSpeed);
     float noise = smoothNoise(scrollingUV);
-    float treshold = vertexUV.y;
-    float flicker = smoothstep(treshold, treshold +0.3, noise);
+
+    //Cover
+
+    float baseHeight = 0.35f;
+    float treshold = smoothstep(baseHeight, 1.0, vertexUV.y);
+    float coverage = smoothstep(treshold, treshold +0.3, noise);
+
+    //HEAT
     //Not sure which one of these looks best...
     float shapeMask = 1.0 - vertexUV.y;
   //float shapeMask = pow(1.0 - vertexUV.y, 0.5);
     float noiseVariation = mix(bottomThickness, 1.0, noise);
     //float fire = noise * shapeMask;
-    float fire = noiseVariation * shapeMask;
+    float heat = noiseVariation * shapeMask;
 
 
-    float boundary1 = 0.3; //lower this for less red
+    float boundary1 = 0.2; //lower this for less red
     float boundary2 = 0.8; //lower this for less white (more yellow)
 
     vec3 fireColor;
-    if(fire < boundary1)
+    if(heat < boundary1)
     {
-        fireColor = mix(black, red, fire / boundary1);
+        fireColor = mix(black, red, heat / boundary1);
     }
-    else if (fire < boundary2)
+    else if (heat < boundary2) 
     {
-        fireColor = mix(red, yellow, (fire - boundary1) / (boundary2 - boundary1));
+        fireColor = mix(red, yellow, (heat - boundary1) / (boundary2 - boundary1));
     }
     else
     {
-    fireColor = mix(yellow, white, (fire - boundary2) / (1.0 - boundary2));
+    fireColor = mix(yellow, white, (heat - boundary2) / (1.0 - boundary2));
     }
 
+    //Grey
+    //FragColor = vec4(vec3(coverage), 1.0);
 
-
-    FragColor = vec4(fireColor, fire);
+    FragColor = vec4(fireColor, coverage);
 
 
 
