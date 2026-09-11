@@ -118,9 +118,17 @@ void main()
 
     //Cover
 
-    float baseHeight = 0.35f;
+    float baseHeight = 0.5f;
     float treshold = smoothstep(baseHeight, 1.0, vertexUV.y);
-    float coverage = smoothstep(treshold, treshold +0.3, noise);
+
+    float distanceFromCenter = abs(vertexUV.x -0.5f);//Checking how far from the center of the fire we are.
+    float baseWidth = mix(0.5f, 0.05f, vertexUV.y);//The fire gets narrower the more upwards it goes.
+    float edgeNoise = smoothNoise(vec2(vertexUV.x * 1.5f, vertexUV.y *0.8f - time * 0.3f));//Adding some noise to the edges of the fire to make it look more natural.
+    float edgeWidth = baseWidth + (edgeNoise - 0.5f) * 0.25f; //moving the edge in and out.
+    float edgeMask = 1.0f - smoothstep(edgeWidth - 0.08f, edgeWidth + 0.08f, distanceFromCenter); //Makes the fire look more natural by, making edges transparent
+
+    float coverage = smoothstep(treshold - 0.15f, treshold +0.15, noise);
+    coverage *= edgeMask;
 
     //HEAT
     //Not sure which one of these looks best...
