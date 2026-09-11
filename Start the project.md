@@ -1,0 +1,1 @@
+Go to build/bin/shader_course.exe
