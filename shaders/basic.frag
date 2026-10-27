@@ -18,6 +18,7 @@ float bottomThickness = 0.82f;
     vec3 yellow = vec3(1.0, 1.0, 0.0);  
     vec3 white = vec3(1.0, 1.0, 1.0);
 
+
 float hash(vec2 p)
 {
     return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); //Fake random
@@ -123,12 +124,19 @@ void main()
 
     float distanceFromCenter = abs(vertexUV.x -0.5f);//Checking how far from the center of the fire we are.
     float baseWidth = mix(0.5f, 0.05f, vertexUV.y);//The fire gets narrower the more upwards it goes.
-    float edgeNoise = smoothNoise(vec2(vertexUV.x * 1.5f, vertexUV.y *0.8f - time * 0.3f));//Adding some noise to the edges of the fire to make it look more natural.
+
+    //float edgeNoise = smoothNoise(vec2(vertexUV.x * 1.5f, vertexUV.y *0.8f - time * 0.3f));//Adding some noise to the edges of the fire to make it look more natural.
+
+
+    float edgeNoise = noise;//use noise again
     float edgeWidth = baseWidth + (edgeNoise - 0.5f) * 0.25f; //moving the edge in and out.
     float edgeMask = 1.0f - smoothstep(edgeWidth - 0.08f, edgeWidth + 0.08f, distanceFromCenter); //Makes the fire look more natural by, making edges transparent
 
     float coverage = smoothstep(treshold - 0.15f, treshold +0.15, noise);
     coverage *= edgeMask;
+
+    if (coverage < 0.02) discard; //Discarding the fragment if it is too transparent, avoids pixels that cant be seen.
+
 
     //HEAT
     //Not sure which one of these looks best...
